@@ -1,0 +1,325 @@
+﻿<Page
+    x:Class="Al_Browser.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Al_Browser"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel
+            Grid.Row="0"
+            Height="50"
+            Background="#E6E6E6">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ListView
+                    xmlns:m="using:Al_Browser.Models"
+                    x:Name="Tabs"
+                    IsItemClickEnabled="True"
+                    SelectionChanged="Tabs_SelectionChanged"
+                    SelectionMode="Single"
+                    Style="{StaticResource VerticalListView}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="m:Tab">
+                            <Border Width="200" Padding="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Margin="0,5"
+                                        Source="{x:Bind Favicon}" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Margin="10,5"
+                                        Text="{x:Bind Title}"
+                                        TextTrimming="WordEllipsis" />
+                                    <AppBarButton
+                                        x:Uid="CloseTab"
+                                        Grid.Column="2"
+                                        Width="30"
+                                        Height="30"
+                                        Click="CloseTab_Click">
+                                        <TextBlock
+                                            Margin="10,-7,10,0"
+                                            HorizontalAlignment="Center"
+                                            FontFamily="Segoe MDL2 Assets"
+                                            FontSize="18"
+                                            Text="&#xE711;" />
+                                    </AppBarButton>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <AppBarButton
+                    Name="NewTab"
+                    x:Uid="NewTab"
+                    Grid.Column="1"
+                    Click="NewTab_Click">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="18"
+                        Text="&#xE710;" />
+                </AppBarButton>
+            </Grid>
+        </StackPanel>
+
+        <CommandBar
+            Grid.Row="1"
+            HorizontalContentAlignment="Stretch"
+            Background="#8adbdb"
+            Closing="CommandBar_Closing"
+            Opening="CommandBar_Opening">
+            <CommandBar.Content>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <AppBarButton
+                            Name="CBBack"
+                            x:Uid="CBBack"
+                            Click="CBBack_Click"
+                            Icon="Back" />
+                        <AppBarButton
+                            Name="CBForward"
+                            x:Uid="CBForward"
+                            Click="CBForward_Click"
+                            Icon="Forward" />
+                        <AppBarButton
+                            Name="CBRefresh"
+                            x:Uid="CBRefresh"
+                            Click="CBRefresh_Click"
+                            Icon="Refresh" />
+                    </StackPanel>
+                    <AutoSuggestBox
+                        Name="AddressBar"
+                        Grid.Column="1"
+                        Margin="16,10"
+                        QueryIcon="Forward"
+                        QuerySubmitted="AddressBar_QuerySubmitted"
+                        TextChanged="AddressBar_TextChanged" />
+                </Grid>
+            </CommandBar.Content>
+            <AppBarButton
+                Name="CBFavorite"
+                x:Uid="CBFavorite"
+                Click="CBFavorite_Click"
+                Icon="Favorite">
+                <AppBarButton.Flyout>
+                    <Flyout>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="250" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                x:Uid="NameFavorite"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="10" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Margin="10"
+                                Text="URL:" />
+
+                            <TextBox
+                                Name="AddFName"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="0,5" />
+                            <TextBox
+                                Name="AddFURL"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="0,5" />
+
+                            <Button
+                                Name="AddFavorite"
+                                x:Uid="AF"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                Click="AddFavorite_Click" />
+                        </Grid>
+                    </Flyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+            <AppBarButton
+                Name="CBUnFavorite"
+                x:Uid="CBUnFavorite"
+                Click="CBUnFavorite_Click"
+                Icon="UnFavorite"
+                Visibility="Collapsed" />
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton
+                    Name="CBBack2"
+                    x:Uid="CBBack2"
+                    Click="CBBack_Click" />
+                <AppBarButton
+                    Name="CBForward2"
+                    x:Uid="CBForward2"
+                    Click="CBForward_Click" />
+                <AppBarButton
+                    Name="CBRefresh2"
+                    x:Uid="CBRefresh2"
+                    Click="CBRefresh_Click" />
+                <AppBarButton x:Uid="CBOpenInBrowser" Click="OpenInBrowser_Click" />
+                <AppBarButton x:Uid="CBFavorites" Click="FavoriteListCB_Click" />
+                <AppBarButton x:Uid="CBHistory" Click="History_Click" />
+                <AppBarButton
+                    Name="About"
+                    x:Uid="CBAbout"
+                    Click="About_Click" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+
+        <SplitView
+            Name="MainSplitView"
+            Grid.Row="2"
+            OpenPaneLength="300">
+            <SplitView.Pane>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Name="LeftTitle"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="10"
+                        FontSize="20"
+                        FontWeight="Bold" />
+
+                    <Button
+                        Name="Clear"
+                        x:Uid="Clear"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="10"
+                        Click="Clear_Click" />
+
+                    <ListBox
+                        xmlns:m="using:Al_Browser.Models"
+                        Name="FavoritesList"
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        SelectionChanged="FavoritesList_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="m:Favorite">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Image
+                                        Grid.RowSpan="2"
+                                        Grid.Column="0"
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Bind Favicon}" />
+
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Margin="18,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="{x:Bind Title}" />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Margin="18,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="{x:Bind Url}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </SplitView.Pane>
+
+            <SplitView.Content>
+                <WebView
+                    Name="WView"
+                    ContentLoading="WView_ContentLoading"
+                    LoadCompleted="WView_LoadCompleted"
+                    NavigationStarting="WView_NavigationStarting"
+                    Source="http://ya.ru" />
+            </SplitView.Content>
+        </SplitView>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="CBBack.Visibility" Value="Collapsed" />
+                        <Setter Target="CBForward.Visibility" Value="Collapsed" />
+                        <Setter Target="CBRefresh.Visibility" Value="Collapsed" />
+                        <Setter Target="CBBack2.Visibility" Value="Visible" />
+                        <Setter Target="CBForward2.Visibility" Value="Visible" />
+                        <Setter Target="CBRefresh2.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="660" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="CBBack.Visibility" Value="Visible" />
+                        <Setter Target="CBForward.Visibility" Value="Visible" />
+                        <Setter Target="CBRefresh.Visibility" Value="Visible" />
+                        <Setter Target="CBBack2.Visibility" Value="Collapsed" />
+                        <Setter Target="CBForward2.Visibility" Value="Collapsed" />
+                        <Setter Target="CBRefresh2.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</Page>
